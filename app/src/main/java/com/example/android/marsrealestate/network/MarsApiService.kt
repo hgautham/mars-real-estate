@@ -17,23 +17,30 @@
 
 package com.example.android.marsrealestate.network
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Call
 import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
 private const val BASE_URL = "https://mars.udacity.com/"
 
+// This block creates the moshi object
+// The moshi object is the one that converts the json response from api to the MarsProperty object
+// I created in this module.
+private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build();
+
 // This block creates the retrofit builder
 private val retrofit = Retrofit.Builder()
-        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
         .build()
 
 // This provides the interface for the Get call
 interface MarsApiService {
     @GET("realestate")
-    fun getProperties(): Call<String>
+    fun getProperties(): Call<List<MarsProperty>>
 }
 
 object MarsApi {
